@@ -46,16 +46,21 @@ int main() {
 
 	while (!WindowShouldClose()) {
 		mouse_position = GetMousePosition();
-		
+
+		float delta = GetFrameTime();
+
 		Button b = new_Button((Vector2){420 - 150, 550}, (Vector2){300, 100}, "Multiplayer", 40);
 
 		if (IsKeyDown(KEY_P) && frames_counter%4 == 0) { pause = !pause; }
 		if (IsKeyDown(KEY_ENTER)) { pause = false; game_over = false; }
 
+		BeginDrawing();
+
 		if (pause && !game_over) {
 			DrawMenu();
 			button_draw(b);
 		}
+
 		if (game_over) { 
 			Snake_clear(snake);
 			pause = true; 
@@ -63,21 +68,18 @@ int main() {
 			DrawGMMenu();
 		}
 
-		float delta = GetFrameTime();
-
 		sprintf(score_str, "%d", score);
 
 		if (!pause) {
 			Snake_process(snake, delta);
 		}
 
-
 		ClearBackground(BLACK);
 
-		DrawInterface();
-		DrawText(score_str, 440, 20, 40, WHITE);
-
-		
+		if (!pause && !game_over) {
+			DrawInterface();
+			DrawText(score_str, 440, 20, 40, WHITE);
+		}
 
 		if (!pause) {
 			Snake_draw(snake);
