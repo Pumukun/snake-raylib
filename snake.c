@@ -30,7 +30,7 @@ void fruit_delete(Fruit* f) {
 	fruit_alive = false;
 }
 
-SnakeCell* get_cell(Snake* snake, size_t index) {
+SnakeCell* Snake_get_cell(Snake* snake, size_t index) {
 	if (index > snake->length) {
 		return NULL;
 	}
@@ -53,19 +53,9 @@ SnakeCell* new_SnakeCell(Vector2 position, SnakeCell* next, Direction direction)
 	return cell;
 }
 
-Snake* Snake_init(Vector2 position) {
-	Snake* snake = (Snake*)malloc(sizeof(Snake));
-	SnakeCell* head = new_SnakeCell(position, NULL, UP);
-
-	snake->head = head;
-	snake->length = 1;
-
-	return snake;
-}
-
 void Snake_add_cell(Snake* snake) {
 	if (!snake->head) {
-		printf("ERR: Snake is null!");
+		fprintf(stderr,"ERR: Snake is null!");
 		exit(EXIT_FAILURE);
 	}
 
@@ -80,6 +70,16 @@ void Snake_add_cell(Snake* snake) {
 	++(snake->length);
 }
 
+Snake* Snake_init(Vector2 position) {
+	Snake* snake = (Snake*)malloc(sizeof(Snake));
+	SnakeCell* head = new_SnakeCell(position, NULL, UP);
+
+	snake->head = head;
+	snake->length = 1;
+
+	return snake;
+}
+
 void Snake_draw(Snake* snake) {
 	SnakeCell* tmp_cell = snake->head;
 
@@ -92,11 +92,11 @@ void Snake_draw(Snake* snake) {
 }
 
 int Snake_check_collision(Snake* snake) {
-	if (snake->length < 4) {
+	if (snake->length < 3) {
 		return false;
 	}
 
-	SnakeCell* tmp_cell = get_cell(snake, 2);
+	SnakeCell* tmp_cell = Snake_get_cell(snake, 2);
 
 	while (tmp_cell->next != NULL) {
 		if (snake->head->position.x == tmp_cell->position.x && snake->head->position.y == tmp_cell->position.y) {
@@ -110,17 +110,20 @@ int Snake_check_collision(Snake* snake) {
 
 void Snake_process(Snake* snake, float delta) {
 	SnakeCell* head = snake->head;
+	if (snake->head->next == NULL) {
+		Snake_add_cell(snake);
+	}
 
 	if ((IsKeyDown(KEY_UP) || IsKeyDown(KEY_W)) && head->direction != DOWN) {
 		head->direction = UP;
 	}
-	if ((IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S)) && head->direction != UP) {
+	else if ((IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S)) && head->direction != UP) {
 		head->direction = DOWN;
 	}
-	if ((IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) && head->direction != RIGHT) {
+	else if ((IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) && head->direction != RIGHT) {
 		head->direction = LEFT;
 	}
-	if ((IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) && head->direction != LEFT) {
+	else if ((IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) && head->direction != LEFT) {
 		head->direction = RIGHT;
 	}
 
@@ -164,11 +167,11 @@ void Snake_process(Snake* snake, float delta) {
 		}
 
 		for (int i = 0; i < snake->length; ++i) {
-			snake_position[i] = (Vector2)get_cell(snake, i)->position;
+			snake_position[i] = (Vector2)Snake_get_cell(snake, i)->position;
 		}
 
 		for (size_t i = 1; i < snake->length; ++i) {
-			get_cell(snake, i)->position = snake_position[i-1];
+			Snake_get_cell(snake, i)->position = snake_position[i-1];
 		}
 	}
 
@@ -189,6 +192,7 @@ void Snake_process(Snake* snake, float delta) {
 
 	if (Snake_check_collision(snake)) {
 		game_over = true;
+		mod = 8;
 	}
 
 	frames_counter++;
@@ -201,6 +205,7 @@ void Snake_clear(Snake* snake) {
 		free(tmp_cell);
 		tmp_cell = next_cell;
 	}
+
 	snake->head->next = NULL;
 	snake->length = 1;
 	snake->head->position = (Vector2){420, 420};

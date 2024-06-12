@@ -3,6 +3,7 @@
 #include <time.h>
 
 #include "snake.h"
+#include "input.h"
 
 #define CELL_SIZE 40
 
@@ -12,9 +13,11 @@
 int game_over = false;
 int score = 0;
 
+Vector2 mouse_position;
+
 void DrawInterface() {
-	DrawRectangleLines(20, 20, 800, 800, WHITE);
-	DrawRectangleLines(19, 19, 800, 800, WHITE);
+	DrawRectangleLines(19, 19, 801, 801, WHITE);
+	DrawRectangleLines(18, 18, 801, 801, WHITE);
 }
 
 void DrawMenu() {
@@ -35,18 +38,23 @@ int main() {
 
 	char score_str[256];
 
-	Snake* snake = Snake_init((Vector2){SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2});
+	Snake* snake = Snake_init((Vector2){(float)SCREEN_WIDTH / 2, (float)SCREEN_HEIGHT / 2});
 
 	srand(time(NULL));
 
 	int pause = true;
 
 	while (!WindowShouldClose()) {
+		mouse_position = GetMousePosition();
+		
+		Button b = new_Button((Vector2){420 - 150, 550}, (Vector2){300, 100}, "Multiplayer", 40);
+
 		if (IsKeyDown(KEY_P) && frames_counter%4 == 0) { pause = !pause; }
 		if (IsKeyDown(KEY_ENTER)) { pause = false; game_over = false; }
 
 		if (pause && !game_over) {
 			DrawMenu();
+			button_draw(b);
 		}
 		if (game_over) { 
 			Snake_clear(snake);
@@ -63,13 +71,14 @@ int main() {
 			Snake_process(snake, delta);
 		}
 
-		BeginDrawing();
 
 		ClearBackground(BLACK);
 
 		DrawInterface();
 		DrawText(score_str, 440, 20, 40, WHITE);
+
 		
+
 		if (!pause) {
 			Snake_draw(snake);
 		}
@@ -78,6 +87,10 @@ int main() {
 
 		frames_counter++;
 	}
+
+	Snake_clear(snake);
+	free(snake->head);
+	free(snake);
 
 	CloseWindow();
 

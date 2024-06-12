@@ -29,14 +29,10 @@ typedef struct Fruit {
 	Vector2 position;
 } Fruit;
 
-SnakeCell* new_SnakeCell(Vector2 position, SnakeCell* next, Direction direction);
-
 Snake* Snake_init(Vector2 position);
 
 void Snake_draw(Snake* snake);
 void Snake_process(Snake* snake, float delta);
-
-void Snake_add_cell(Snake* snake);
 
 void Snake_clear(Snake* snake);
 
