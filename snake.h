@@ -5,6 +5,12 @@
 
 #define CELL_SIZE 40
 
+#define SCREEN_WIDTH 1920
+#define SCREEN_HEIGHT 1080
+
+#define WALL_WIDTH 1040
+#define WALL_HEIGHT 1040
+
 typedef enum __direction {
 	UP,
 	DOWN,

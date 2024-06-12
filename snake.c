@@ -6,23 +6,33 @@ Fruit* f;
 
 int mod = 8;
 
+Vector4 borders = { (float)(SCREEN_WIDTH - WALL_WIDTH) / 2, 20, (float)(SCREEN_WIDTH - WALL_WIDTH) / 2 + WALL_WIDTH, WALL_HEIGHT + 20 };
+
 extern int game_over;
 extern int score;
 
 Fruit* fruit_spawn() {
-	int r1 = (rand() % 80) * 10;
-	int r2 = (rand() % 80) * 10;
-	while (r1 % 40 != 0) { r1 = (rand() % 80) * 10; }
-	while (r2 % 40 != 0) { r2 = (rand() % 80) * 10; }
+	int r1 = (rand() % ((SCREEN_WIDTH - WALL_WIDTH) / 2 + WALL_WIDTH - (SCREEN_WIDTH - WALL_WIDTH) / 2)) + (SCREEN_WIDTH - WALL_WIDTH) / 2;
+	int r2 = (rand() % ((SCREEN_HEIGHT - WALL_HEIGHT) / 2 + WALL_HEIGHT - (SCREEN_HEIGHT - WALL_HEIGHT) / 2)) + (SCREEN_HEIGHT - WALL_HEIGHT) / 2;
+
+	while (r1 % 40 != 0) {
+		r1 = (rand() % ((SCREEN_WIDTH - WALL_WIDTH) / 2 + WALL_WIDTH - (SCREEN_WIDTH - WALL_WIDTH) / 2)) + (SCREEN_WIDTH - WALL_WIDTH) / 2;
+	}
+
+	while (r2 % 40 != 0) {
+		r2 = (rand() % ((SCREEN_HEIGHT - WALL_HEIGHT) / 2 + WALL_HEIGHT - (SCREEN_HEIGHT - WALL_HEIGHT) / 2)) + (SCREEN_HEIGHT - WALL_HEIGHT) / 2;
+	}
 
 	Fruit* f = (Fruit*)malloc(sizeof(Fruit));
-	f->position = (Vector2){r1+20, r2+20};
+	f->position = (Vector2){r1, r2 - 20};
 
 	return f;
 }
 
 void fruit_draw(Fruit* f) {
-	DrawRectangleV((Vector2)f->position, (Vector2){CELL_SIZE, CELL_SIZE}, RED);
+	if (f->position.x != 0 && f->position.y != 0) {
+		DrawRectangleV((Vector2)f->position, (Vector2){CELL_SIZE, CELL_SIZE}, RED);
+	}
 }
 
 void fruit_delete(Fruit* f) {
@@ -175,7 +185,7 @@ void Snake_process(Snake* snake, float delta) {
 		}
 	}
 
-	if (head->position.x <= 0 || head->position.x >= 820 || head->position.y <= 0 || head->position.y >= 820) {
+	if (head->position.x <= borders.x - 40 || head->position.x >= borders.z || head->position.y <= borders.y - 40 || head->position.y >= borders.w) {
 		game_over = true;
 	}
 
@@ -208,7 +218,7 @@ void Snake_clear(Snake* snake) {
 
 	snake->head->next = NULL;
 	snake->length = 1;
-	snake->head->position = (Vector2){420, 420};
+	snake->head->position = (Vector2){(float)SCREEN_WIDTH / 2, (float)SCREEN_HEIGHT / 2};
 	snake->head->direction = UP;
 }
 

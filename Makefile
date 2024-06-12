@@ -3,7 +3,7 @@ CCFLAGS = -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
 
 all: snake
 
-snake: main.c snake.c input.c
+snake: main.c snake.c input.c server.c
 	$(CC) $(CCFLAGS) -o $@ $^
 
 .PHONY: clean install
