@@ -96,7 +96,7 @@ void Snake_draw(Snake* snake) {
 	fruit_draw(f);
 
 	while (tmp_cell != NULL) {
-		DrawRectangleV((Vector2)tmp_cell->position, (Vector2){CELL_SIZE, CELL_SIZE}, GREEN);
+		DrawRectangleV((Vector2)tmp_cell->position, (Vector2){CELL_SIZE, CELL_SIZE}, BLUE);
 		tmp_cell = tmp_cell->next;
 	}
 }
@@ -160,7 +160,7 @@ void Snake_process(Snake* snake, float delta) {
 	if ((frames_counter%mod) == 0) {
 		switch (snake->head->direction) {
 			case UP:
-				head->position.y -= CELL_SIZE; 
+				head->position.y -= CELL_SIZE;
 				break;
 
 			case DOWN:

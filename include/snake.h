@@ -1,3 +1,6 @@
+#ifndef SNAKE_H
+#define SNAKE_H
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <raylib.h>
@@ -41,4 +44,6 @@ void Snake_draw(Snake* snake);
 void Snake_process(Snake* snake, float delta);
 
 void Snake_clear(Snake* snake);
+
+#endif /* SNAKE_H */
 
